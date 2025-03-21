@@ -1,0 +1,25 @@
+services:
+  ezd-postgres:
+    image: postgres:15
+    container_name: ezd-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      PG_SUPERUSER_PASSWORD: md53175bce1d3201d16594cebf9d7eb3f9d
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - ezd-net
+
+volumes:
+  postgres_data:
+
+networks:
+  ezd-net:
+    driver: bridge

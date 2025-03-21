@@ -1,0 +1,42 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CompanyRepository } from '../repositories/company.repository';
+import { CompanyEntity } from '../entities/company.entity';
+import { DadataService } from './dadata.service';
+
+@Injectable()
+export class CompanyService {
+  constructor(
+    private readonly companyRepository: CompanyRepository,
+    private readonly dadataService: DadataService,
+  ) {}
+
+  public async getCompany(options: { id: string; userId: string }): Promise<CompanyEntity> {
+    const company = await this.companyRepository.getCompany({
+      id: options.id,
+      userId: options.userId,
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company with id ${options.id} not found.`);
+    }
+
+    return company;
+  }
+
+  public async addCompany(options: { inn: string; userId: string }): Promise<CompanyEntity> {
+    const companyInfo = await this.dadataService.getCompanyByInn(options.inn);
+
+    return this.companyRepository.addCompany({
+      inn: options.inn,
+      name: companyInfo.name,
+      type: companyInfo.type,
+      userId: options.userId,
+    });
+  }
+
+  public async getCompanyList(userId: string): Promise<CompanyEntity[]> {
+    return this.companyRepository.getCompanyList({
+      userIds: [userId],
+    });
+  }
+}
