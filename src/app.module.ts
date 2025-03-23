@@ -11,9 +11,14 @@ import { CompanyEntity } from './company/entities/company.entity';
 import { RegisterModule } from './registration/registration.module';
 import { DriverModule } from './driver/driver.module';
 import { DriverEntity } from './driver/entities/driver.entity';
+import { ConfigModule } from '@nestjs/config';
+import * as process from 'node:process';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     DriverModule,
     RegisterModule,
     UserModule,
@@ -26,11 +31,11 @@ import { DriverEntity } from './driver/entities/driver.entity';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [UserEntity, CompanyEntity, DriverEntity],
       logging: true,
       synchronize: true,
