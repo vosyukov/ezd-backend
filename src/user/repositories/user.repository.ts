@@ -10,8 +10,8 @@ export class UserRepository {
     private readonly repository: Repository<UserEntity>,
   ) {}
 
-  public async createUser(options: { email: string }): Promise<UserEntity> {
-    return this.repository.save({ email: options.email });
+  public async createUser(options: { email?: string; tgId?: string }): Promise<UserEntity> {
+    return this.repository.save({ email: options.email, tgId: options.tgId });
   }
 
   public async getUser(filter: { email?: string; tgId?: string }): Promise<UserEntity | null> {

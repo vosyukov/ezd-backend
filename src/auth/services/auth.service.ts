@@ -11,10 +11,10 @@ export class AuthService {
   ) {}
 
   public async authTg(tgId: number): Promise<{ jwt: string }> {
-    const user = await this.userRepository.getUser({ tgId: tgId.toString() });
+    let user = await this.userRepository.getUser({ tgId: tgId.toString() });
 
     if (!user) {
-      throw new UnauthorizedException();
+      user = await this.userRepository.createUser({ tgId: tgId.toString() });
     }
 
     const payload: JwtPayload = { userId: user.id };
