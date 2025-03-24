@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { CompanyType } from '../entities/company.entity';
@@ -184,10 +184,10 @@ interface SuggestionsResponse {
 }
 
 @Injectable()
-export class DadataService {
+export class DadataBridge {
   constructor(private readonly httpService: HttpService) {}
 
-  public async getCompanyByInn(inn: string): Promise<{ name: string; type: CompanyType }> {
+  public async getCompanyByInn(inn: string): Promise<{ name: string; type: CompanyType } | null> {
     const { data } = await firstValueFrom(
       this.httpService.post<SuggestionsResponse>(
         DADATA_API_URL,
@@ -201,11 +201,10 @@ export class DadataService {
       ),
     );
 
-    if (data.suggestions.length === 0) {
-      console.log(data.suggestions);
-      throw new HttpException('', 400);
+    if (data.suggestions.length !== 1) {
+      return null;
     }
-    console.log(data.suggestions[0]);
+
     const val = data.suggestions[0];
     return { name: val.data.name.short_with_opf, type: val.data.type };
   }

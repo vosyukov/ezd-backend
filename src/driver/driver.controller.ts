@@ -10,14 +10,16 @@ export class DriverController {
 
   @UseGuards(JwtGuard)
   @Post('driver.add')
-  public async addDriver(@Body() dto: AddDriverDto, @JwtPayload() payload: JwtPayload): Promise<void> {
-    await this.driverService.addDriver({
+  public async addDriver(@Body() dto: AddDriverDto, @JwtPayload() payload: JwtPayload): Promise<{ id: string }> {
+    const driver = await this.driverService.addDriver({
       inn: dto.inn,
       name: dto.name,
       companyId: dto.companyId,
       surname: dto.surname,
       userId: payload.userId,
     });
+
+    return { id: driver.id };
   }
 
   @UseGuards(JwtGuard)

@@ -5,11 +5,11 @@ import { CompanyEntity } from './entities/company.entity';
 import { CompanyController } from './company.controller';
 import { CompanyRepository } from './repositories/company.repository';
 import { HttpModule } from '@nestjs/axios';
-import { DadataService } from './services/dadata.service';
+import { DadataBridge } from './services/dadata.bridge';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CompanyEntity]), HttpModule],
-  providers: [CompanyService, CompanyRepository, DadataService],
+  providers: [CompanyService, CompanyRepository, DadataBridge],
   controllers: [CompanyController],
   exports: [CompanyRepository],
 })

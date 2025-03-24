@@ -45,7 +45,7 @@ export class DriverService {
 
   // public fairDriver(options: { driverId: string; userId: string; feedback: string }): Promise<DriverEntity[]> {}
 
-  public async addDriver(options: AddDriverOptions): Promise<void> {
+  public async addDriver(options: AddDriverOptions): Promise<{ id: string }> {
     const company = await this.companyRepository.getCompany({
       userId: options.userId,
       id: options.companyId,
@@ -55,12 +55,14 @@ export class DriverService {
       throw new NotFoundException('Company not found.');
     }
 
-    await this.driverRepository.addDriver({
+    const driver = await this.driverRepository.addDriver({
       inn: options.inn,
       companyId: company.id,
       name: options.name,
       surname: options.surname,
       status: DriverStatus.HIRED,
     });
+
+    return { id: driver.id };
   }
 }
